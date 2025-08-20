@@ -1,0 +1,993 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>LicitFlow</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <!-- Fuentes / Iconos -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Inter:slnt,wght@-10..0,100..900&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+  <!-- Librerías (CSS) -->
+  <link rel="stylesheet" href="{% static 'lib/animate/animate.min.css' %}"/>
+  <link href="{% static 'lib/lightbox/css/lightbox.min.css' %}" rel="stylesheet">
+  <link href="{% static 'lib/owlcarousel/assets/owl.carousel.min.css' %}" rel="stylesheet">
+
+  <!-- Bootstrap + Tema -->
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
+<!-- === ESTILOS ESPECÍFICOS PLANES & MATRIZ === -->
+<style>
+/* ---------- Tarjetas de planes ---------- */
+.plan-card{
+  background:#f6f8ff;
+  border:1px solid #e3e8ff;
+  border-radius:18px;
+  padding:28px;
+  text-align:center;
+  position:relative;
+  transition:transform .18s ease, box-shadow .18s ease;
+}
+.plan-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 10px 24px rgba(47,111,255,.12);
+}
+.plan-card .plan-title{
+  font-weight:700; color:#1c274c; letter-spacing:.2px;
+}
+.plan-card .plan-price{ font-size:28px; margin:8px 0 14px; color:#1c274c; }
+.plan-card .plan-price span{ font-size:40px; font-weight:800; line-height:1; }
+.plan-featured{
+  background:#ecf2ff;
+  border-color:#2f6fff;
+  box-shadow:0 10px 28px rgba(47,111,255,.18);
+}
+.badge-featured{
+  position:absolute; top:12px; right:12px;
+  background:#2f6fff; color:#fff; padding:6px 10px;
+  border-radius:999px; font-size:12px; font-weight:700;
+}
+
+/* ---------- Encabezado de la sección ---------- */
+.plans .display-5{ font-weight:800; color:#0e1b4d; }
+.plans .text-primary{ color:#2f6fff !important; }
+
+/* ---------- Matriz de funcionalidades ---------- */
+.feature-matrix{ border:0; border-radius:16px; overflow:hidden; }
+.matrix-head{
+  display:grid; grid-template-columns: 1fr 140px 140px 140px;
+  gap:0; background:#f3f6fb; padding:14px 18px;
+  position:sticky; top:0; z-index:1;
+  border-bottom:1px solid #e7ebf3;
+  font-weight:700; color:#253056;
+}
+.matrix-section{
+  background:#e5f5ff; color:#0f5f8b; font-weight:800;
+  padding:10px 18px; border-top:1px solid #e7ebf3;
+  border-bottom:1px solid #e7ebf3;
+  letter-spacing:.2px;
+}
+.matrix-row{
+  display:grid; grid-template-columns: 1fr 140px 140px 140px;
+  align-items:center; padding:12px 18px;
+  border-bottom:1px solid #eef2f7; background:#fff;
+}
+.matrix-row:nth-child(even){ background:#fbfdff; }
+.matrix-row > div:first-child{ color:#1f2946; }
+
+/* checks y ayudas */
+.check{ color:#2f6fff; font-size:20px; line-height:1; }
+.text-muted{ color:#95a0bf !important; }
+.help{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:18px; height:18px; border-radius:50%;
+  background:#eef2ff; color:#6b79a7; font-size:12px;
+  margin-left:6px; cursor:help;
+  border:1px solid #dae2ff;
+}
+
+/* ---------- Adaptación móvil: filas como tarjetas ---------- */
+@media (max-width: 991.98px){
+  .matrix-head{ display:none; }
+  .matrix-section{ position:sticky; top:0; z-index:1; }
+}
+@media (max-width: 767.98px){
+  .matrix-row{
+    grid-template-columns: 1fr;
+    padding:14px;
+    border:1px solid #eef2f7; border-radius:12px; margin:10px 12px;
+    box-shadow:0 2px 8px rgba(17,24,39,.04);
+  }
+  .matrix-row > div:first-child{ margin-bottom:10px; }
+  .matrix-row > .text-center{
+    display:inline-flex; align-items:center; justify-content:center;
+    margin-right:8px; margin-bottom:6px;
+    padding:6px 12px; border-radius:999px; background:#f5f7ff;
+    min-width:104px; font-weight:600; color:#334155;
+  }
+  .matrix-row > .text-center:empty{ display:none; }
+  .matrix-row > .text-center::before{
+    content: attr(data-label); margin-right:6px; color:#6b79a7; font-size:12px; font-weight:600;
+  }
+}
+</style>
+</head>
+  <body>
+
+        <!-- Spinner Start -->
+        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only">Cargando...</span>
+            </div>
+        </div>
+        <!-- Spinner End -->
+
+        <!-- Topbar Start -->
+        <div class="container-fluid topbar px-0 px-lg-4 bg-light py-2 d-none d-lg-block">
+            <div class="container">
+                <div class="row gx-0 align-items-center">
+                    <div class="col-lg-8 text-center text-lg-start mb-lg-0">
+                        <div class="d-flex flex-wrap">
+                            <div class="border-end border-primary pe-3">
+                                <span class="text-muted small">
+                                    <i class="fas fa-map-marker-alt text-primary me-2"></i>Santiago, Chile
+                                </span>
+                            </div>
+                            <div class="ps-3">
+                                <a href="mailto:contacto@licitflow.com" class="text-muted small">
+                                    <i class="fas fa-envelope text-primary me-2"></i>contacto@licitflow.com
+                                </a>
+                            </div>
+                            <div class="ps-3">
+                                <a href="https://wa.me/56900000000" class="text-muted small" target="_blank">
+                                    <i class="fab fa-whatsapp text-primary me-2"></i>+56 9 0000 0000
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 text-center text-lg-end">
+                        <div class="d-flex justify-content-end">
+                            <div class="d-flex border-end border-primary pe-3">
+                                <a class="btn p-0 text-primary me-3" href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a class="btn p-0 text-primary me-3" href="#"><i class="fab fa-instagram"></i></a>
+                                <a class="btn p-0 text-primary me-0" href="#"><i class="fab fa-twitter"></i></a>
+                            </div>
+                            <div class="dropdown ms-3">
+                                <a href="#" class="dropdown-toggle text-dark" data-bs-toggle="dropdown">
+                                    <small><i class="fas fa-globe-europe text-primary me-2"></i> Español (CL)</small>
+                                </a>
+                                <div class="dropdown-menu rounded">
+                                    <a href="#" class="dropdown-item">Español (CL)</a>
+                                    <a href="#" class="dropdown-item">Español (LATAM)</a>
+                                    <a href="#" class="dropdown-item">English</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Topbar End -->
+
+   <!-- Navbar & Hero Start -->
+    <div class="container-fluid nav-bar px-0 px-lg-4 py-lg-0">
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light">
+        <!-- Logo -->
+        <a href="{% url 'pages:home' %}" class="navbar-brand p-0">
+            <h1 class="text-primary mb-0"><i class="fas fa-file-contract me-2"></i> LicitFlow</h1>
+            <!-- <img src="{% static 'img/logo.png' %}" alt="LicitFlow"> -->
+        </a>
+
+        <!-- Toggler -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="fa fa-bars"></span>
+        </button>
+
+        <!-- Items -->
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav mx-0 mx-lg-auto">
+            <a href="{% url 'pages:home' %}" class="nav-item nav-link active">Inicio</a>
+            <a href="{% url 'pages:about' %}" class="nav-item nav-link">Nosotros</a>
+            <a href="{% url 'pages:service' %}" class="nav-item nav-link">Servicios</a>
+            <a href="{% url 'pages:blog' %}" class="nav-item nav-link">Blog</a>
+
+            <div class="nav-item dropdown">
+                <a href="#" class="nav-link" data-bs-toggle="dropdown"><span class="dropdown-toggle">Más</span></a>
+                <div class="dropdown-menu">
+                <a href="{% url 'pages:feature' %}" class="dropdown-item">Características</a>
+                <a href="{% url 'pages:team' %}" class="dropdown-item">Equipo</a>
+                <a href="{% url 'pages:testimonial' %}" class="dropdown-item">Testimonios</a>
+                <a href="{% url 'pages:faq' %}" class="dropdown-item">Preguntas Frecuentes</a>
+                </div>
+            </div>
+
+            <a href="{% url 'pages:contact' %}" class="nav-item nav-link">Contacto</a>
+
+            <div class="nav-btn px-3">
+                <a href="https://wa.me/56900000000?text=Hola%20quiero%20m%C3%A1s%20informaci%C3%B3n%20sobre%20LicitFlow"
+                target="_blank"
+                class="btn btn-primary rounded-pill py-2 px-4 ms-3 flex-shrink-0">
+                Escríbenos
+                </a>
+            </div>
+            </div>
+        </div>
+
+        <!-- WhatsApp -->
+        <div class="d-none d-xl-flex flex-shrink-0 ps-4">
+            <a href="https://wa.me/56900000000" target="_blank"
+            class="btn btn-light btn-lg-square rounded-circle position-relative wow tada" data-wow-delay=".9s">
+            <i class="fab fa-whatsapp fa-2x text-success"></i>
+            </a>
+            <div class="d-flex flex-column ms-3">
+            <span>Soporte inmediato</span>
+            <a href="https://wa.me/56900000000" target="_blank"><span class="text-dark">+56 9 0000 0000</span></a>
+            </div>
+        </div>
+        </nav>
+    </div>
+    </div>
+    <!-- Navbar & Hero End -->
+
+    <!-- Modal Búsqueda Start -->
+    <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content rounded-0">
+        <div class="modal-header">
+            <h5 class="modal-title" id="searchModalLabel">Buscar licitaciones</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+
+        <div class="modal-body d-flex align-items-center bg-primary">
+            <form class="w-75 mx-auto" method="get" action="/buscar/" role="search" aria-label="Buscar licitaciones">
+            <div class="input-group input-group-lg">
+                <input
+                type="search"
+                class="form-control p-3"
+                name="q"
+                placeholder="Palabras clave, ID de licitación, comprador, rubro…"
+                aria-describedby="search-button"
+                autocomplete="off"
+                required
+                />
+                <button id="search-button" class="btn bg-light border input-group-text p-3" type="submit" title="Buscar">
+                <i class="fa fa-search" aria-hidden="true"></i>
+                <span class="visually-hidden">Buscar</span>
+                </button>
+            </div>
+
+            <!-- Filtros rápidos opcionales -->
+            <div class="d-flex flex-wrap gap-2 mt-3">
+                <select class="form-select form-select-sm w-auto" name="estado" aria-label="Filtro por estado">
+                <option value="">Estado</option>
+                <option value="abierta">Abiertas</option>
+                <option value="cerrada">Cerradas</option>
+                <option value="adjudicada">Adjudicadas</option>
+                </select>
+                <select class="form-select form-select-sm w-auto" name="categoria" aria-label="Filtro por categoría">
+                <option value="">Categoría</option>
+                <option value="servicios">Servicios</option>
+                <option value="tecnologia">Tecnología</option>
+                <option value="salud">Salud</option>
+                <option value="construccion">Construcción</option>
+                </select>
+                <input type="date" class="form-control form-control-sm w-auto" name="desde" aria-label="Desde" />
+                <input type="date" class="form-control form-control-sm w-auto" name="hasta" aria-label="Hasta" />
+                <button type="reset" class="btn btn-outline-light btn-sm">Limpiar</button>
+            </div>
+            </form>
+        </div>
+        </div>
+    </div>
+    </div>
+    <!-- Modal Búsqueda End -->
+
+
+    <!-- Carousel Start -->
+    <div class="header-carousel owl-carousel">
+    <!-- Slide 1: Búsqueda + Análisis IA de pertinencia -->
+    <div class="header-carousel-item bg-primary">
+        <div class="carousel-caption">
+        <div class="container">
+            <div class="row g-4 align-items-center">
+            <div class="col-lg-7 animated fadeInLeft">
+                <div class="text-sm-center text-md-start">
+                <h4 class="text-white text-uppercase fw-bold mb-4">LicitFlow — Licitaciones Inteligentes</h4>
+                <h1 class="display-1 text-white mb-4">Encuentra y evalúa licitaciones públicas en minutos</h1>
+                <p class="mb-5 fs-5">
+                    Centraliza la búsqueda y obtén un <strong>score de pertinencia con IA</strong> según tus
+                    <em>skills, experiencia, equipo y tecnología</em>. Filtra por organismo, rubro, monto, región y fecha de cierre.
+                </p>
+                <div class="d-flex justify-content-center justify-content-md-start flex-shrink-0 mb-4">
+                    <a class="btn btn-light rounded-pill py-3 px-4 px-md-5 me-2" href="#buscar">
+                    <i class="fas fa-search me-2"></i> Buscar licitaciones
+                    </a>
+                    <a class="btn btn-dark rounded-pill py-3 px-4 px-md-5 ms-2" href="#ia-fit">
+                    <i class="fas fa-robot me-2"></i> Probar análisis IA
+                    </a>
+                </div>
+                </div>
+            </div>
+            <div class="col-lg-5 animated fadeInRight">
+                <div class="calrousel-img" style="object-fit: cover;">
+                <img src="{% static 'img/carousel-2.png' %}" class="img-fluid w-100" alt="Análisis de pertinencia de licitaciones con IA">
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- Slide 2: Pipeline + Postulación -->
+    <div class="header-carousel-item bg-primary">
+        <div class="carousel-caption">
+        <div class="container">
+            <div class="row gy-4 gy-lg-0 gx-0 gx-lg-5 align-items-center">
+            <div class="col-lg-5 animated fadeInLeft">
+                <div class="calrousel-img">
+                <img src="{% static 'img/carousel-2.png' %}" class="img-fluid w-100" alt="Pipeline y seguimiento de licitaciones">
+                </div>
+            </div>
+            <div class="col-lg-7 animated fadeInRight">
+                <div class="text-sm-center text-md-end">
+                <h4 class="text-white text-uppercase fw-bold mb-4">De alerta a adjudicación</h4>
+                <h1 class="display-1 text-white mb-4">Aumenta tu tasa de adjudicación con LicitFlow</h1>
+                <p class="mb-5 fs-5">
+                    Gestiona el <strong>pipeline</strong>, recibe <strong>alertas de cierre</strong>, genera documentos base y
+                    colabora con tu equipo en un solo lugar. Métricas de margen, órdenes de compra y resultados, todo integrado.
+                </p>
+                <div class="d-flex justify-content-center justify-content-md-end flex-shrink-0 mb-4">
+                    <a class="btn btn-light rounded-pill py-3 px-4 px-md-5 me-2" href="#demo">
+                    <i class="fas fa-play-circle me-2"></i> Ver demo
+                    </a>
+                    <a class="btn btn-dark rounded-pill py-3 px-4 px-md-5 ms-2" href="#registro">
+                    <i class="fas fa-bolt me-2"></i> Crear cuenta
+                    </a>
+                </div>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
+    <!-- Carousel End -->
+
+    <!-- Feature Start -->
+    <div class="container-fluid feature bg-light py-5">
+    <div class="container py-5">
+        <div class="text-center mx-auto pb-5 wow fadeInUp" data-wow-delay="0.2s" style="max-width: 800px;">
+        <h4 class="text-primary">Características de LicitFlow</h4>
+        <h1 class="display-4 mb-4">Optimiza tu participación en licitaciones públicas</h1>
+        <p class="mb-0">
+            Centraliza toda la información de licitaciones, recibe alertas, analiza la pertinencia con IA
+            y aumenta tus probabilidades de adjudicación con una plataforma única.
+        </p>
+        </div>
+        <div class="row g-4">
+        <!-- Feature 1 -->
+        <div class="col-md-6 col-lg-6 col-xl-3 wow fadeInUp" data-wow-delay="0.2s">
+            <div class="feature-item p-4 pt-0">
+            <div class="feature-icon p-4 mb-4">
+                <i class="fas fa-search fa-3x"></i>
+            </div>
+            <h4 class="mb-4">Búsqueda Inteligente</h4>
+            <p class="mb-4">
+                Encuentra licitaciones relevantes filtrando por organismo, rubro, monto, región o fecha de cierre.
+            </p>
+            <a class="btn btn-primary rounded-pill py-2 px-4" href="#buscar">Explorar</a>
+            </div>
+        </div>
+        <!-- Feature 2 -->
+        <div class="col-md-6 col-lg-6 col-xl-3 wow fadeInUp" data-wow-delay="0.4s">
+            <div class="feature-item p-4 pt-0">
+            <div class="feature-icon p-4 mb-4">
+                <i class="fas fa-robot fa-3x"></i>
+            </div>
+            <h4 class="mb-4">Análisis con IA</h4>
+            <p class="mb-4">
+                Calcula el <strong>score de pertinencia</strong> de cada licitación según tus capacidades, experiencia y equipo.
+            </p>
+            <a class="btn btn-primary rounded-pill py-2 px-4" href="#ia-fit">Probar</a>
+            </div>
+        </div>
+        <!-- Feature 3 -->
+        <div class="col-md-6 col-lg-6 col-xl-3 wow fadeInUp" data-wow-delay="0.6s">
+            <div class="feature-item p-4 pt-0">
+            <div class="feature-icon p-4 mb-4">
+                <i class="fas fa-project-diagram fa-3x"></i>
+            </div>
+            <h4 class="mb-4">Gestión de Pipeline</h4>
+            <p class="mb-4">
+                Organiza tus oportunidades en un flujo claro: desde la alerta inicial hasta la adjudicación y ejecución.
+            </p>
+            <a class="btn btn-primary rounded-pill py-2 px-4" href="#pipeline">Ver más</a>
+            </div>
+        </div>
+        <!-- Feature 4 -->
+        <div class="col-md-6 col-lg-6 col-xl-3 wow fadeInUp" data-wow-delay="0.8s">
+            <div class="feature-item p-4 pt-0">
+            <div class="feature-icon p-4 mb-4">
+                <i class="fas fa-headset fa-3x"></i>
+            </div>
+            <h4 class="mb-4">Soporte 24/7</h4>
+            <p class="mb-4">
+                Acompañamiento experto en cada etapa: postulación, preparación de documentos y gestión de resultados.
+            </p>
+            <a class="btn btn-primary rounded-pill py-2 px-4" href="#soporte">Contactar</a>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
+    <!-- Feature End -->
+
+    <!-- About Start -->
+    <div class="container-fluid bg-light about pb-5">
+    <div class="container pb-5">
+        <div class="row g-5">
+        <!-- Texto -->
+        <div class="col-xl-6 wow fadeInLeft" data-wow-delay="0.2s">
+            <div class="about-item-content bg-white rounded p-5 h-100">
+            <h4 class="text-primary">Sobre LicitFlow</h4>
+            <h1 class="display-4 mb-4">IA y gestión para ganar más licitaciones</h1>
+            <p>
+                LicitFlow centraliza todo el ciclo de licitación: descubrimiento, análisis de pertinencia con IA,
+                preparación documental y seguimiento de resultados. Así enfocan su equipo donde hay mayor probabilidad de adjudicar.
+            </p>
+            <p>
+                Conectamos con fuentes oficiales, analizamos requisitos técnicos y de experiencia, y calculamos un
+                <strong>score de ajuste</strong> según tus capacidades, historial, equipo y tecnología disponible.
+            </p>
+            <p class="text-dark"><i class="fa fa-check text-primary me-3"></i>Análisis de pertinencia (skills, experiencia, equipo y tech)</p>
+            <p class="text-dark"><i class="fa fa-check text-primary me-3"></i>Pipeline y alertas por fecha de cierre y monto</p>
+            <p class="text-dark mb-4"><i class="fa fa-check text-primary me-3"></i>Gestión documental y checklist de cumplimiento</p>
+            <a class="btn btn-primary rounded-pill py-3 px-5" href="#demo">Solicitar demo</a>
+            </div>
+        </div>
+
+        <!-- Métricas / imagen -->
+        <div class="col-xl-6 wow fadeInRight" data-wow-delay="0.2s">
+            <div class="bg-white rounded p-5 h-100">
+            <div class="row g-4 justify-content-center">
+                <div class="col-12">
+                <div class="rounded bg-light">
+                    <img src="{% static 'img/about-1.png' %}" class="img-fluid rounded w-100" alt="Panel de LicitFlow">
+                </div>
+                </div>
+
+                <div class="col-sm-6">
+                <div class="counter-item bg-light rounded p-3 h-100">
+                    <div class="counter-counting">
+                    <span class="text-primary fs-2 fw-bold" data-toggle="counter-up">3500</span>
+                    <span class="h1 fw-bold text-primary">+</span>
+                    </div>
+                    <h4 class="mb-0 text-dark">Licitaciones monitoreadas/mes</h4>
+                </div>
+                </div>
+
+                <div class="col-sm-6">
+                <div class="counter-item bg-light rounded p-3 h-100">
+                    <div class="counter-counting">
+                    <span class="text-primary fs-2 fw-bold" data-toggle="counter-up">42</span>
+                    <span class="h1 fw-bold text-primary">%</span>
+                    </div>
+                    <h4 class="mb-0 text-dark">Ahorro de tiempo en screening</h4>
+                </div>
+                </div>
+
+                <div class="col-sm-6">
+                <div class="counter-item bg-light rounded p-3 h-100">
+                    <div class="counter-counting">
+                    <span class="text-primary fs-2 fw-bold" data-toggle="counter-up">180</span>
+                    <span class="h1 fw-bold text-primary">+</span>
+                    </div>
+                    <h4 class="mb-0 text-dark">Empresas usando LicitFlow</h4>
+                </div>
+                </div>
+
+                <div class="col-sm-6">
+                <div class="counter-item bg-light rounded p-3 h-100">
+                    <div class="counter-counting">
+                    <span class="text-primary fs-2 fw-bold" data-toggle="counter-up">75</span>
+                    <span class="h1 fw-bold text-primary">%</span>
+                    </div>
+                    <h4 class="mb-0 text-dark">Postulaciones con score &gt; 70</h4>
+                </div>
+                </div>
+
+            </div>
+            </div>
+        </div>
+
+        </div>
+    </div>
+    </div>
+    <!-- About End -->
+
+    <!-- Service Start -->
+    <div class="container-fluid service py-5">
+    <div class="container py-5">
+        <div class="text-center mx-auto pb-5 wow fadeInUp" data-wow-delay="0.2s" style="max-width: 800px;">
+        <h4 class="text-primary">Nuestros Servicios</h4>
+        <h1 class="display-4 mb-4">Todo el ciclo de licitación en un solo lugar</h1>
+        <p class="mb-0">
+            LicitFlow integra búsqueda, análisis y gestión documental de licitaciones con Inteligencia Artificial,
+            optimizando tus probabilidades de adjudicación.
+        </p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+        <!-- Servicio 1 -->
+        <div class="col-md-6 col-lg-6 col-xl-3 wow fadeInUp" data-wow-delay="0.2s">
+            <div class="service-item">
+            <div class="service-img">
+                <img src="{% static 'img/blog-1.png' %}"  class="img-fluid rounded-top w-100" alt="Búsqueda Inteligente">
+                <div class="service-icon p-3">
+                <i class="fa fa-search fa-2x"></i>
+                </div>
+            </div>
+            <div class="service-content p-4">
+                <div class="service-content-inner">
+                <a href="#" class="d-inline-block h4 mb-4">Búsqueda Inteligente</a>
+                <p class="mb-4">Monitoreamos miles de licitaciones en tiempo real y filtramos las que se ajustan a tu rubro.</p>
+                <a class="btn btn-primary rounded-pill py-2 px-4" href="#">Ver más</a>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- Servicio 2 -->
+        <div class="col-md-6 col-lg-6 col-xl-3 wow fadeInUp" data-wow-delay="0.4s">
+            <div class="service-item">
+            <div class="service-img">
+                <img src="{% static 'img/blog-2.png' %}"  class="img-fluid rounded-top w-100" alt="Análisis de pertinencia">
+                <div class="service-icon p-3">
+                <i class="fa fa-chart-line fa-2x"></i>
+                </div>
+            </div>
+            <div class="service-content p-4">
+                <div class="service-content-inner">
+                <a href="#" class="d-inline-block h4 mb-4">Análisis de Pertinencia</a>
+                <p class="mb-4">IA que evalúa tu experiencia, equipo y capacidades para recomendar las licitaciones con mayor probabilidad de éxito.</p>
+                <a class="btn btn-primary rounded-pill py-2 px-4" href="#">Ver más</a>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- Servicio 3 -->
+        <div class="col-md-6 col-lg-6 col-xl-3 wow fadeInUp" data-wow-delay="0.6s">
+            <div class="service-item">
+            <div class="service-img">
+                <img src="{% static 'img/blog-3.png' %}" class="img-fluid rounded-top w-100" alt="Gestión Documental">
+                <div class="service-icon p-3">
+                <i class="fa fa-folder-open fa-2x"></i>
+                </div>
+            </div>
+            <div class="service-content p-4">
+                <div class="service-content-inner">
+                <a href="#" class="d-inline-block h4 mb-4">Gestión Documental</a>
+                <p class="mb-4">Checklist automático, control de vencimientos y repositorio seguro de documentos exigidos en licitaciones.</p>
+                <a class="btn btn-primary rounded-pill py-2 px-4" href="#">Ver más</a>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- Servicio 4 -->
+        <div class="col-md-6 col-lg-6 col-xl-3 wow fadeInUp" data-wow-delay="0.8s">
+            <div class="service-item">
+            <div class="service-img">
+                <img src="{% static 'img/blog-4.png' %}" class="img-fluid rounded-top w-100" alt="Alertas y Seguimiento">
+                <div class="service-icon p-3">
+                <i class="fa fa-bell fa-2x"></i>
+                </div>
+            </div>
+            <div class="service-content p-4">
+                <div class="service-content-inner">
+                <a href="#" class="d-inline-block h4 mb-4">Alertas y Seguimiento</a>
+                <p class="mb-4">Notificaciones de plazos, estado de postulaciones y recordatorios clave para que nunca pierdas una oportunidad.</p>
+                <a class="btn btn-primary rounded-pill py-2 px-4" href="#">Ver más</a>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <!-- CTA final -->
+        <div class="col-12 text-center wow fadeInUp" data-wow-delay="0.2s">
+            <a class="btn btn-primary rounded-pill py-3 px-5" href="#contacto">Solicitar Demo</a>
+        </div>
+        </div>
+    </div>
+    </div>
+    <!-- Service End -->
+
+    <!-- FAQs Start -->
+    <div class="container-fluid faq-section bg-light py-5">
+    <div class="container py-5">
+        <div class="row g-5 align-items-center">
+        <div class="col-xl-6 wow fadeInLeft" data-wow-delay="0.2s">
+            <div class="h-100">
+            <div class="mb-5">
+                <h4 class="text-primary">Preguntas Frecuentes</h4>
+                <h1 class="display-4 mb-0">Resolvemos tus dudas sobre LicitFlow</h1>
+            </div>
+
+            <div class="accordion" id="accordionExample">
+                
+                <!-- FAQ 1 -->
+                <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button border-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    ¿Cómo me ayuda LicitFlow a encontrar licitaciones relevantes?
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show active" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                    <div class="accordion-body rounded">
+                    Nuestro motor de búsqueda inteligente monitorea miles de procesos en Mercado Público y otras fuentes, filtrando las oportunidades según tu rubro, historial y capacidades, para que solo recibas licitaciones realmente relevantes.
+                    </div>
+                </div>
+                </div>
+
+                <!-- FAQ 2 -->
+                <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    ¿Qué pasa si me falta documentación para postular?
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                    LicitFlow te alerta automáticamente sobre documentos faltantes o próximos a vencer. Además, te entrega un checklist personalizado por cada licitación para que no pierdas oportunidades por requisitos administrativos.
+                    </div>
+                </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="accordion-item">
+                <h2 class="accordion-header" id="headingThree">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    ¿LicitFlow utiliza Inteligencia Artificial para recomendar licitaciones?
+                    </button>
+                </h2>
+                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                    Sí. Nuestra IA analiza tu experiencia, historial de adjudicaciones, recursos humanos y técnicos para recomendar las licitaciones con mayor probabilidad de éxito, priorizando aquellas que mejor se ajustan a tu perfil.
+                    </div>
+                </div>
+                </div>
+
+                <!-- FAQ 4 -->
+                <div class="accordion-item">
+                <h2 class="accordion-header" id="headingFour">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                    ¿Puedo integrar LicitFlow con mi CRM o ERP?
+                    </button>
+                </h2>
+                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                    Sí, ofrecemos integración con CRM y ERP mediante API, lo que permite centralizar la información de licitaciones y gestión documental dentro de tu ecosistema actual de trabajo.
+                    </div>
+                </div>
+                </div>
+
+            </div>
+            </div>
+        </div>
+
+        <!-- Imagen de apoyo -->
+        <div class="col-xl-6 wow fadeInRight" data-wow-delay="0.4s">
+            <img src="{% static 'img/carousel-2.png' %}"  class="img-fluid w-100" alt="FAQs LicitFlow">
+        </div>
+        </div>
+    </div>
+    </div>
+    <!-- FAQs End -->
+
+  <!-- Pricing & Features Start -->
+<section class="plans py-5">
+  <div class="container py-5">
+
+    <!-- Encabezado -->
+    <div class="text-center mx-auto mb-5" style="max-width: 900px;">
+      <h4 class="text-primary">Planes y Características</h4>
+      <h1 class="display-5 mb-3">Elige el plan que impulsa tu operación en licitaciones públicas</h1>
+      <p class="mb-0">Comparativa clara por funcionalidades: búsqueda, gestión, reportes con IA y soporte.</p>
+    </div>
+
+    <!-- Plan cards -->
+    <div class="row g-4 justify-content-center mb-4">
+      <div class="col-md-6 col-lg-4">
+        <div class="plan-card h-100">
+          <div class="plan-title">Plan Crece</div>
+          <div class="plan-price"><span>2.2</span> UF <small class="text-muted">/mensual + IVA</small></div>
+          <a href="#" class="btn btn-primary rounded-pill px-4">Prueba Gratis</a>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4">
+        <div class="plan-card plan-featured h-100">
+          <div class="badge badge-featured">Recomendado</div>
+          <div class="plan-title">Plan Escala</div>
+          <div class="plan-price"><span>3.2</span> UF <small class="text-muted">/mensual + IVA</small></div>
+          <a href="#" class="btn btn-primary rounded-pill px-4">Prueba Gratis</a>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4">
+        <div class="plan-card h-100">
+          <div class="plan-title">Plan PRO</div>
+          <div class="plan-price"><span>5</span> UF <small class="text-muted">/mensual + IVA</small></div>
+          <a href="#" class="btn btn-primary rounded-pill px-4">Prueba Gratis</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feature matrix -->
+    <div class="feature-matrix card shadow-sm">
+      <!-- Cabecera tabla (desktop) -->
+      <div class="matrix-head d-none d-md-grid">
+        <div>Funcionalidad</div>
+        <div class="text-center">Crece</div>
+        <div class="text-center">Escala</div>
+        <div class="text-center">PRO</div>
+      </div>
+
+      <!-- Búsqueda -->
+      <div class="matrix-section">Búsqueda</div>
+
+      <div class="matrix-row">
+        <div>
+          Búsqueda de Negocios
+          <span class="help" data-bs-toggle="tooltip" title="Alertas y filtros por organismo, rubro y región.">?</span>
+        </div>
+        <div class="text-center" data-label="Crece"><i class="fas fa-check-circle check" aria-label="Incluye"></i></div>
+        <div class="text-center" data-label="Escala"><i class="fas fa-check-circle check" aria-label="Incluye"></i></div>
+        <div class="text-center" data-label="PRO"><i class="fas fa-check-circle check" aria-label="Incluye"></i></div>
+      </div>
+
+      <div class="matrix-row">
+        <div>
+          Búsqueda en Organismos y palabras clave guardadas
+          <span class="help" data-bs-toggle="tooltip" title="Guarda combinaciones de keywords y organismos para reuso.">?</span>
+        </div>
+        <div class="text-center" data-label="Crece"><i class="fas fa-check-circle check"></i></div>
+        <div class="text-center" data-label="Escala"><i class="fas fa-check-circle check"></i></div>
+        <div class="text-center" data-label="PRO"><i class="fas fa-check-circle check"></i></div>
+      </div>
+
+      <div class="matrix-row">
+        <div>
+          Sugerencia de negocios con IA
+          <span class="help" data-bs-toggle="tooltip" title="Recomendaciones según historial, skills del equipo y desempeño.">?</span>
+        </div>
+        <div class="text-center" data-label="Crece"><i class="fas fa-check-circle check"></i></div>
+        <div class="text-center" data-label="Escala"><i class="fas fa-check-circle check"></i></div>
+        <div class="text-center" data-label="PRO"><i class="fas fa-check-circle check"></i></div>
+      </div>
+
+      <div class="matrix-row">
+        <div>Múltiples configuraciones de búsqueda</div>
+        <div class="text-center text-muted" data-label="Crece">—</div>
+        <div class="text-center" data-label="Escala"><i class="fas fa-check-circle check"></i></div>
+        <div class="text-center" data-label="PRO"><i class="fas fa-check-circle check"></i></div>
+      </div>
+
+      <!-- Gestión -->
+      <div class="matrix-section">Gestión</div>
+
+      <div class="matrix-row">
+        <div>Gestión de negocios en seguimiento</div>
+        <div class="text-center" data-label="Crece"><i class="fas fa-check-circle check"></i></div>
+        <div class="text-center" data-label="Escala"><i class="fas fa-check-circle check"></i></div>
+        <div class="text-center" data-label="PRO"><i class="fas fa-check-circle check"></i></div>
+      </div>
+
+      <div class="matrix-row">
+        <div>Asignación de responsables y estados</div>
+        <div class="text-center" data-label="Crece"><i class="fas fa-check-circle check"></i></div>
+        <div class="text-center" data-label="Escala"><i class="fas fa-check-circle check"></i></div>
+        <div class="text-center" data-label="PRO"><i class="fas fa-check-circle check"></i></div>
+      </div>
+
+      <div class="matrix-row">
+        <div>Calendario de licitaciones y hitos</div>
+        <div class="text-center text-muted" data-label="Crece">—</div>
+        <div class="text-center text-muted" data-label="Escala">—</div>
+        <div class="text-center" data-label="PRO"><i class="fas fa-check-circle check"></i></div>
+      </div>
+
+      <div class="matrix-row">
+        <div>Análisis comercial para Licitaciones y Compra Ágil</div>
+        <div class="text-center text-muted" data-label="Crece">—</div>
+        <div class="text-center" data-label="Escala"><i class="fas fa-check-circle check"></i></div>
+        <div class="text-center" data-label="PRO"><i class="fas fa-check-circle check"></i></div>
+      </div>
+
+      <div class="matrix-row">
+        <div>Reportes por equipo y desempeño</div>
+        <div class="text-center text-muted" data-label="Crece">—</div>
+        <div class="text-center text-muted" data-label="Escala">—</div>
+        <div class="text-center" data-label="PRO"><i class="fas fa-check-circle check"></i></div>
+      </div>
+
+      <div class="matrix-row">
+        <div>Notificaciones por WhatsApp / email</div>
+        <div class="text-center text-muted" data-label="Crece">—</div>
+        <div class="text-center" data-label="Escala"><i class="fas fa-check-circle check"></i></div>
+        <div class="text-center" data-label="PRO"><i class="fas fa-check-circle check"></i></div>
+      </div>
+
+      <div class="matrix-row">
+        <div>Órdenes de compra y documentos</div>
+        <div class="text-center text-muted" data-label="Crece">—</div>
+        <div class="text-center text-muted" data-label="Escala">—</div>
+        <div class="text-center" data-label="PRO"><i class="fas fa-check-circle check"></i></div>
+      </div>
+
+      <!-- Reporte & IA -->
+      <div class="matrix-section">Reporte & IA</div>
+
+      <div class="matrix-row">
+        <div>Análisis de oportunidades con IA</div>
+        <div class="text-center" data-label="Crece"><i class="fas fa-check-circle check"></i></div>
+        <div class="text-center" data-label="Escala"><i class="fas fa-check-circle check"></i></div>
+        <div class="text-center" data-label="PRO"><i class="fas fa-check-circle check"></i></div>
+      </div>
+
+      <div class="matrix-row">
+        <div>Convenio Marco (reportes avanzados)</div>
+        <div class="text-center text-muted" data-label="Crece">—</div>
+        <div class="text-center" data-label="Escala"><i class="fas fa-check-circle check"></i></div>
+        <div class="text-center" data-label="PRO"><i class="fas fa-check-circle check"></i></div>
+      </div>
+
+      <div class="matrix-row">
+        <div>Postulaciones, adjudicaciones y competidores</div>
+        <div class="text-center text-muted" data-label="Crece">—</div>
+        <div class="text-center" data-label="Escala"><i class="fas fa-check-circle check"></i></div>
+        <div class="text-center" data-label="PRO"><i class="fas fa-check-circle check"></i></div>
+      </div>
+
+      <div class="matrix-row">
+        <div>Mercado de productos con IA</div>
+        <div class="text-center text-muted" data-label="Crece">—</div>
+        <div class="text-center text-muted" data-label="Escala">—</div>
+        <div class="text-center" data-label="PRO"><i class="fas fa-check-circle check"></i></div>
+      </div>
+
+      <!-- Soporte -->
+      <div class="matrix-section">Soporte</div>
+
+      <div class="matrix-row">
+        <div>Capacitación y Onboarding</div>
+        <div class="text-center" data-label="Crece"><i class="fas fa-check-circle check"></i></div>
+        <div class="text-center" data-label="Escala"><i class="fas fa-check-circle check"></i></div>
+        <div class="text-center" data-label="PRO"><i class="fas fa-check-circle check"></i></div>
+      </div>
+
+      <div class="matrix-row">
+        <div>Soporte en vivo</div>
+        <div class="text-center text-muted" data-label="Crece">—</div>
+        <div class="text-center" data-label="Escala"><i class="fas fa-check-circle check"></i></div>
+        <div class="text-center" data-label="PRO"><i class="fas fa-check-circle check"></i></div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- Pricing & Features End -->
+
+  
+  
+<!-- Footer Start -->
+<footer class="bg-dark text-light pt-5">
+    <div class="container">
+        <div class="row g-5">
+
+            <!-- Logo y descripción -->
+            <div class="col-lg-4 col-md-6">
+                <a href="index.html" class="d-inline-flex align-items-center mb-3">
+                    <img src="{% static 'img/logo.png' %}" alt="Logo" class="me-2" style="height: 40px;">
+                    <h3 class="fw-bold text-white m-0">Plataforma de Licitaciones</h3>
+                </a>
+                <p class="text-muted mt-3">
+                    Accede a información clara y actualizada sobre licitaciones públicas, 
+                    ayudando a proveedores y entidades a tomar mejores decisiones.
+                </p>
+            </div>
+
+            <!-- Links útiles -->
+            <div class="col-lg-2 col-md-6">
+                <h5 class="text-white mb-4">Enlaces</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-muted"><i class="fas fa-angle-right me-2"></i>Inicio</a></li>
+                    <li><a href="#" class="text-muted"><i class="fas fa-angle-right me-2"></i>Licitaciones Abiertas</a></li>
+                    <li><a href="#" class="text-muted"><i class="fas fa-angle-right me-2"></i>Adjudicaciones</a></li>
+                    <li><a href="#" class="text-muted"><i class="fas fa-angle-right me-2"></i>Preguntas Frecuentes</a></li>
+                    <li><a href="#" class="text-muted"><i class="fas fa-angle-right me-2"></i>Contacto</a></li>
+                </ul>
+            </div>
+
+            <!-- Contacto -->
+            <div class="col-lg-3 col-md-6">
+                <h5 class="text-white mb-4">Contacto</h5>
+                <p><i class="fas fa-map-marker-alt me-2"></i> Av. Libertador 456, Santiago - Chile</p>
+                <p><i class="fas fa-envelope me-2"></i> soporte@licitaciones.cl</p>
+                <p><i class="fas fa-phone-alt me-2"></i> +56 2 2587 1234</p>
+            </div>
+
+            <!-- Newsletter -->
+            <div class="col-lg-3 col-md-6">
+                <h5 class="text-white mb-4">Suscríbete</h5>
+                <p class="text-muted">Recibe alertas y novedades de licitaciones directamente en tu correo.</p>
+                <form class="d-flex">
+                    <input type="email" class="form-control rounded-start border-0" placeholder="Tu email">
+                    <button class="btn btn-primary rounded-end">Enviar</button>
+                </form>
+            </div>
+        </div>
+
+       
+    </div>
+</footer>
+<!-- Footer End -->
+        
+<!-- Copyright Start -->
+<div class="container-fluid copyright py-4">
+    <div class="container">
+        <div class="row g-4 align-items-center">
+            <!-- Texto lado izquierdo -->
+            <div class="col-md-6 text-center text-md-end mb-md-0">
+                <span class="text-body">
+                    <a href="https://www.indexar.cl" class="border-bottom text-white">
+                        <i class="fas fa-copyright text-light me-2"></i>INDEXAR
+                    </a>, Todos los derechos reservados.
+                </span>
+            </div>
+
+            <!-- Texto lado derecho -->
+            <div class="col-md-6 text-center text-md-start text-body">
+                Desarrollado por 
+                <a class="border-bottom text-white" href="https://www.indexar.cl">INDEXAR</a> 
+                | Serrano 73, Oficina 707, Santiago - Chile
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Copyright End -->
+
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-primary btn-lg-square rounded-circle back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        </a>
+
+        <!-- JavaScript Libraries (CDNs OK) -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Librerías locales desde STATIC -->
+        <script src="{% static 'lib/wow/wow.min.js' %}"></script>
+        <script src="{% static 'lib/easing/easing.min.js' %}"></script>
+        <script src="{% static 'lib/waypoints/waypoints.min.js' %}"></script>
+        <script src="{% static 'lib/counterup/counterup.min.js' %}"></script>
+        <script src="{% static 'lib/lightbox/js/lightbox.min.js' %}"></script>
+        <script src="{% static 'lib/owlcarousel/owl.carousel.min.js' %}"></script>
+
+        <!-- Template Javascript -->
+        <script src="{% static 'js/main.js' %}"></script>
+
+        <script>
+        // Inicializa WOW (necesario para animaciones)
+        new WOW().init();
+        </script>
+    </body>
+
+</html>

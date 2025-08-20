@@ -1,0 +1,2 @@
+release: python manage.py collectstatic --noinput && python manage.py migrate
+web: gunicorn licitflow.wsgi:application --workers ${WEB_CONCURRENCY:-3} --threads ${GUNICORN_THREADS:-2} --timeout ${GUNICORN_TIMEOUT:-60} --bind 0.0.0.0:$PORT
