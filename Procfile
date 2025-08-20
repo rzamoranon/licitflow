@@ -1,2 +1,2 @@
-web: cd licitflow && gunicorn --pythonpath . licitflow.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 60 --log-file -
-release: cd licitflow && python manage.py migrate && python manage.py collectstatic --noinput
+web: gunicorn licitflow.wsgi:application --workers ${WEB_CONCURRENCY:-3} --threads ${GUNICORN_THREADS:-2} --timeout ${GUNICORN_TIMEOUT:-60} --bind 0.0.0.0:$PORT
+release: cd licitflow && python manage.py migrate --noinput && ([ "$DISABLE_COLLECTSTATIC" = "1" ] || python manage.py collectstatic --noinput)
