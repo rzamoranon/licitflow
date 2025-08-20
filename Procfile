@@ -1,2 +1,2 @@
-release: python licitflow/manage.py collectstatic --noinput && python licitflow/manage.py migrate
-web: gunicorn wsgi:application --chdir licitflow --workers 2 --timeout 60 --log-file - --access-logfile - --error-logfile -
+web: gunicorn --pythonpath licitflow licitflow.wsgi:application --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 60 --log-file -
+release: python licitflow/manage.py migrate && python licitflow/manage.py collectstatic --noinput
