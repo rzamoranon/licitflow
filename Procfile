@@ -1,2 +1,2 @@
-web: gunicorn licitflow.wsgi:application
-release: python manage.py migrate
+web: gunicorn licitflow.wsgi:application --chdir licitflow
+release: python licitflow/manage.py migrate
