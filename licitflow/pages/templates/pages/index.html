@@ -174,66 +174,85 @@
         </div>
         <!-- Topbar End -->
 
-   <!-- Navbar & Hero Start -->
-    <div class="container-fluid nav-bar px-0 px-lg-4 py-lg-0">
-    <div class="container">
-        <nav class="navbar navbar-expand-lg navbar-light">
-        <!-- Logo -->
-        <a href="{% url 'pages:home' %}" class="navbar-brand p-0">
-            <h1 class="text-primary mb-0"><i class="fas fa-file-contract me-2"></i> LicitFlow</h1>
-            <!-- <img src="{% static 'img/logo.png' %}" alt="LicitFlow"> -->
-        </a>
+<!-- Navbar & Hero Start -->
+<div class="container-fluid nav-bar px-0 px-lg-4 py-lg-0">
+  <div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <!-- Logo -->
+      <a href="{% url 'pages:home' %}" class="navbar-brand p-0">
+        <h1 class="text-primary mb-0">
+          <i class="fas fa-file-contract me-2"></i> LicitFlow
+        </h1>
+      </a>
 
-        <!-- Toggler -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-            <span class="fa fa-bars"></span>
-        </button>
+      <!-- Toggler -->
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarCollapse"
+        aria-controls="navbarCollapse"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="fa fa-bars"></span>
+      </button>
 
-        <!-- Items -->
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-            <div class="navbar-nav mx-0 mx-lg-auto">
-            <a href="{% url 'pages:home' %}" class="nav-item nav-link active">Inicio</a>
-            <a href="{% url 'pages:about' %}" class="nav-item nav-link">Nosotros</a>
-            <a href="{% url 'pages:service' %}" class="nav-item nav-link">Servicios</a>
-            <a href="{% url 'pages:blog' %}" class="nav-item nav-link">Blog</a>
-
-            <div class="nav-item dropdown">
-                <a href="#" class="nav-link" data-bs-toggle="dropdown"><span class="dropdown-toggle">Más</span></a>
-                <div class="dropdown-menu">
-                <a href="{% url 'pages:feature' %}" class="dropdown-item">Características</a>
-                <a href="{% url 'pages:team' %}" class="dropdown-item">Equipo</a>
-                <a href="{% url 'pages:testimonial' %}" class="dropdown-item">Testimonios</a>
-                <a href="{% url 'pages:faq' %}" class="dropdown-item">Preguntas Frecuentes</a>
-                </div>
-            </div>
-
-            <a href="{% url 'pages:contact' %}" class="nav-item nav-link">Contacto</a>
-
-            <div class="nav-btn px-3">
-                <a href="https://wa.me/56900000000?text=Hola%20quiero%20m%C3%A1s%20informaci%C3%B3n%20sobre%20LicitFlow"
-                target="_blank"
-                class="btn btn-primary rounded-pill py-2 px-4 ms-3 flex-shrink-0">
-                Escríbenos
-                </a>
-            </div>
-            </div>
-        </div>
-
-        <!-- WhatsApp -->
-        <div class="d-none d-xl-flex flex-shrink-0 ps-4">
-            <a href="https://wa.me/56900000000" target="_blank"
-            class="btn btn-light btn-lg-square rounded-circle position-relative wow tada" data-wow-delay=".9s">
-            <i class="fab fa-whatsapp fa-2x text-success"></i>
+      <!-- Items -->
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mx-0 mx-lg-auto">
+          <li class="nav-item">
+            <a href="{% url 'pages:home' %}" class="nav-link active">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'pages:about' %}" class="nav-link">Nosotros</a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'pages:service' %}" class="nav-link">Servicios</a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'pages:blog' %}" class="nav-link">Blog</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a
+              href="#"
+              class="nav-link dropdown-toggle"
+              id="navbarDropdown"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Más
             </a>
-            <div class="d-flex flex-column ms-3">
-            <span>Soporte inmediato</span>
-            <a href="https://wa.me/56900000000" target="_blank"><span class="text-dark">+56 9 0000 0000</span></a>
-            </div>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a href="{% url 'pages:feature' %}" class="dropdown-item">Características</a></li>
+              <li><a href="{% url 'pages:team' %}" class="dropdown-item">Equipo</a></li>
+              <li><a href="{% url 'pages:testimonial' %}" class="dropdown-item">Testimonios</a></li>
+              <li><a href="{% url 'pages:faq' %}" class="dropdown-item">Preguntas Frecuentes</a></li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'pages:contact' %}" class="nav-link">Contacto</a>
+          </li>
+        </ul>
+
+        <!-- Botones -->
+        <div class="d-flex align-items-center gap-2 ms-lg-3 mt-3 mt-lg-0">
+          <a
+            href="https://wa.me/56900000000?text=Hola%20quiero%20m%C3%A1s%20informaci%C3%B3n%20sobre%20LicitFlow"
+            target="_blank"
+            class="btn btn-primary rounded-pill py-2 px-4"
+          >
+            Escríbenos
+          </a>
+          <a href="{% url 'pages:login' %}" class="btn btn-outline-primary rounded-pill py-2 px-4">Ingresa</a>
+          <a href="{% url 'accounts:register_account_public' %}" class="btn btn-primary rounded-pill py-2 px-4">Regístrate</a>
         </div>
-        </nav>
-    </div>
-    </div>
-    <!-- Navbar & Hero End -->
+      </div>
+    </nav>
+  </div>
+</div>
+<!-- Navbar & Hero End -->
 
     <!-- Modal Búsqueda Start -->
     <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
@@ -475,7 +494,7 @@
                 <div class="col-sm-6">
                 <div class="counter-item bg-light rounded p-3 h-100">
                     <div class="counter-counting">
-                    <span class="text-primary fs-2 fw-bold" data-toggle="counter-up">42</span>
+          <a href="{% url 'accounts:register_account_public' %}" class="btn btn-primary rounded-pill py-2 px-4">Regístrate</a>
                     <span class="h1 fw-bold text-primary">%</span>
                     </div>
                     <h4 class="mb-0 text-dark">Ahorro de tiempo en screening</h4>

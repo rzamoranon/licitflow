@@ -1,0 +1,9 @@
+<!doctype html>
+<html><body style="font-family:Inter,Arial,sans-serif">
+  <h2>¡Bienvenido a LicitFlow, {{ user.first_name|default:user.username }}!</h2>
+  <p>Estamos felices de tenerte a bordo. Desde ahora podrás buscar licitaciones, gestionar tu pipeline y recibir alertas de cierre.</p>
+  <p><a href="{{ request.scheme }}://{{ request.get_host }}{% url 'pages:home' %}" style="background:#1d4ed8;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none;">
+    Ir a LicitFlow
+  </a></p>
+  <p style="color:#64748b">Equipo LicitFlow</p>
+</body></html>

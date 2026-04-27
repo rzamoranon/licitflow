@@ -1,16 +1,31 @@
 from django.urls import path
-from django.views.generic import TemplateView
+from django.views.generic import RedirectView 
+from . import views
 
-app_name = 'pages'
+app_name = "pages"
 
 urlpatterns = [
-    path('',             TemplateView.as_view(template_name='pages/index.html'), name='home'),
-    path('about/',       TemplateView.as_view(template_name='pages/about.html'), name='about'),
-    path('blog/',        TemplateView.as_view(template_name='pages/blog.html'), name='blog'),
-    path('contact/',     TemplateView.as_view(template_name='pages/contact.html'), name='contact'),
-    path('faq/',         TemplateView.as_view(template_name='pages/FAQ.html'), name='faq'),
-    path('feature/',     TemplateView.as_view(template_name='pages/feature.html'), name='feature'),
-    path('service/',     TemplateView.as_view(template_name='pages/service.html'), name='service'),
-    path('team/',        TemplateView.as_view(template_name='pages/team.html'), name='team'),
-    path('testimonial/', TemplateView.as_view(template_name='pages/testimonial.html'), name='testimonial'),
+    # Páginas públicas (landing)
+    path("contact/", views.contact, name="contact"),
+    path("faq/", views.faq, name="faq"),
+    path("testimonial/", views.testimonial, name="testimonial"),
+    path("team/", views.team, name="team"),
+    path("feature/", views.feature, name="feature"),
+    path("blog/", views.blog, name="blog"),
+    path("service/", views.service, name="service"),
+    path("about/", views.about, name="about"),
+    path("", views.index, name="index"),  # landing pública
+
+    # Auth
+    path("login/", views.login_view, name="login"),
+    path("logout/", views.logout_view, name="logout"),
+    path("ingresar/", RedirectView.as_view(pattern_name="pages:login", permanent=False), name="ingresar"),  # alias legacy
+
+    # Dashboard y secciones protegidas
+    path("home/", views.home, name="home"),
+    path("calendar/", views.calendar_view, name="calendar"),
+    path("reports/", views.reports_view, name="reports"),
+    path("settings/", views.settings_view, name="settings"),
+    path("profile/", views.profile_view, name="profile"),
+    path("help/", views.help_view, name="help"),
 ]

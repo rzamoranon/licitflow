@@ -1,0 +1,217 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LicitFlow — Ingreso</title>
+
+  <!-- Bootstrap & Icons CDN (solo en esta pantalla) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    :root{
+      --lf-primary:#2563eb;          /* azul acción */
+      --lf-primary-dark:#1d4ed8;
+      --lf-bg:#eef2ff;               /* fondo más moderno */
+      --lf-bg-2:#f8fafc;             /* capa extra */
+      --lf-text:#0f172a;             /* gris muy oscuro */
+      --lf-muted:#64748b;            /* gris medio */
+      --lf-panel:#ffffff;            /* panel */
+      --lf-left-grad: linear-gradient(135deg, #1d4ed8 0%, #2563eb 55%, #3b82f6 100%);
+      --lf-shadow: 0 20px 40px rgba(2,6,23,.12), 0 2px 8px rgba(2,6,23,.06);
+      --lf-ring: 0 0 0 .25rem rgba(37,99,235,.16);
+    }
+    /* Fondo con gradientes suaves */
+    body{
+      background:
+        radial-gradient(1200px 600px at -10% -10%, rgba(37,99,235,.08) 0%, rgba(37,99,235,0) 60%),
+        radial-gradient(900px 500px at 110% 0%, rgba(59,130,246,.10) 0%, rgba(59,130,246,0) 60%),
+        var(--lf-bg);
+      color:var(--lf-text);
+    }
+    .login-wrap{
+      max-width: 1140px; margin: 56px auto; background:var(--lf-panel);
+      border-radius:18px; overflow:hidden; box-shadow:var(--lf-shadow);
+      display:flex; gap:0; border:1px solid rgba(2,6,23,.06);
+      backdrop-filter:saturate(120%) blur(2px);
+    }
+    /* Columna izquierda */
+    .login-left{
+      background: var(--lf-left-grad);
+      color:#fff; padding:56px 52px; flex: 1 1 50%;
+      display:flex; flex-direction:column; justify-content:space-between; position:relative;
+      isolation:isolate;
+    }
+    .login-left::after{
+      content:""; position:absolute; inset:0; z-index:-1;
+      background: radial-gradient(500px 220px at 20% 10%, rgba(255,255,255,.12), rgba(255,255,255,0));
+    }
+    .brand-row{ display:flex; align-items:center; gap:14px; }
+    .brand-icon{
+      display:grid; place-items:center; width:46px; height:46px;
+      background:#1e40af; border-radius:12px; font-size:22px; color:#e0e7ff;
+      box-shadow: inset 0 -2px 10px rgba(255,255,255,.16), 0 8px 18px rgba(0,0,0,.15);
+    }
+    .brand-title{ font-weight:900; font-size:34px; margin:0; color:#fff; letter-spacing:.2px; }
+    .left-sub{ color:#dbeafe; margin:6px 0 28px; font-size:15px; }
+    .left-headline{ font-weight:900; font-size:36px; line-height:1.12; color:#fff; margin-bottom:22px; text-wrap:balance; }
+    .lf-list{ margin:0 0 14px 0; padding-left:18px; }
+    .lf-list li{ margin:9px 0; }
+    .btn-left{
+      align-self:flex-start; background:#fff; color:var(--lf-primary);
+      border-radius:999px; padding:10px 18px; font-weight:700; border:0; box-shadow:0 6px 18px rgba(255,255,255,.15);
+      transition:transform .08s ease, box-shadow .2s ease;
+    }
+    .btn-left:hover{ background:#eef2ff; color:var(--lf-primary-dark); transform:translateY(-1px); }
+
+    /* Columna derecha */
+    .login-right{ flex:1 1 50%; padding:44px 48px; background:linear-gradient(180deg, #ffffff 0%, var(--lf-bg-2) 100%); }
+    .login-right h2{ font-weight:900; letter-spacing:.2px; }
+    .text-muted{ color:var(--lf-muted)!important; }
+
+    /* Inputs modernos */
+    .input-group-text{ background:#f3f4f6; border:none; border-radius:12px 0 0 12px; }
+    .form-control{
+      border-radius:12px; border:1px solid #e5e7eb; padding:12px 14px; transition:border-color .15s ease, box-shadow .15s ease;
+      background:#ffffff;
+    }
+    .form-control:focus{ box-shadow:var(--lf-ring); border-color:var(--lf-primary); }
+
+    /* Fallback cuando el widget no trae .form-control */
+    .input-group > input[type="text"],
+    .input-group > input[type="email"],
+    .input-group > input[type="password"]{
+      flex: 1 1 auto; min-width: 0; border: 1px solid #e5e7eb; border-left: 0; border-radius: 0 12px 12px 0; padding: 12px 14px;
+      background:#ffffff;
+    }
+    .input-group > input:focus{ outline: none; box-shadow:var(--lf-ring); border-color: var(--lf-primary); }
+
+    .btn-primary{
+      background:var(--lf-primary); border:none; border-radius:999px; padding:12px 20px; font-weight:800; letter-spacing:.2px;
+      box-shadow: 0 10px 20px rgba(37,99,235,.25);
+      transition: transform .06s ease, box-shadow .2s ease;
+    }
+    .btn-primary:hover{ background:var(--lf-primary-dark); transform:translateY(-1px); box-shadow: 0 14px 26px rgba(37,99,235,.28); }
+    .btn-outline-primary{ border-radius:999px; }
+
+    /* Alert de errores */
+    .alert-danger{ border:0; border-left:4px solid #ef4444; box-shadow:0 10px 24px rgba(239,68,68,.12); }
+
+    /* Footer */
+    .footer-text{ text-align:center; margin:18px 0 0; font-size:14px; color:var(--lf-muted); }
+    .footer-text a{ color:var(--lf-primary); text-decoration:none; font-weight:600; }
+    .footer-text a:hover{ text-decoration:underline; }
+
+    /* Responsive */
+    @media (max-width: 992px){
+      .login-wrap{ flex-direction:column; margin:28px 12px; }
+      .login-left{ padding:28px 24px; }
+      .login-right{ padding:28px 22px; }
+      .left-headline{ font-size:30px; }
+      .brand-title{ font-size:30px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="login-wrap">
+  <!-- Izquierda -->
+  <section class="login-left">
+    <div>
+      <div class="brand-row mb-1">
+        <div class="brand-icon">📄</div>
+        <h1 class="brand-title m-0">LicitFlow</h1>
+      </div>
+      <p class="left-sub">Licitaciones inteligentes para tu equipo</p>
+
+      <h2 class="left-headline">Centraliza. Analiza. Adjudica.</h2>
+      <ul class="lf-list">
+        <li>Búsqueda y alertas personalizadas</li>
+        <li>Análisis de pertinencia con IA</li>
+        <li>Gestión documental y pipeline</li>
+      </ul>
+    </div>
+
+    <a href="{% url 'pages:home' %}" class="btn btn-left mt-3"><i class="bi bi-arrow-left me-2"></i>Volver al inicio</a>
+  </section>
+
+  <!-- Derecha -->
+  <section class="login-right">
+    <h2 class="mb-1">Ingresa a tu cuenta</h2>
+    <p class="text-muted mb-4">Bienvenido de vuelta 👋</p>
+
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ form.non_field_errors|join:", " }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+      </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'pages:login' %}" novalidate>
+      {% csrf_token %}
+      {% if request.GET.next %}
+        <input type="hidden" name="next" value="{{ request.GET.next }}">
+      {% endif %}
+
+      <!-- Usuario / email -->
+      {% if form.identifier %}
+      <div class="mb-3">
+        <label class="form-label fw-semibold" for="{{ form.identifier.id_for_label }}">Usuario o email</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-person"></i></span>
+          {{ form.identifier }}
+        </div>
+        {% if form.identifier.errors %}
+          <div class="invalid-feedback d-block">{{ form.identifier.errors.0 }}</div>
+        {% endif %}
+      </div>
+      {% else %}
+      <div class="mb-3">
+        <label class="form-label fw-semibold" for="{{ form.username.id_for_label }}">Usuario o email</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-person"></i></span>
+          {{ form.username }}
+        </div>
+        {% if form.username.errors %}
+          <div class="invalid-feedback d-block">{{ form.username.errors.0 }}</div>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      <!-- Password -->
+      <div class="mb-2">
+        <label class="form-label fw-semibold" for="{{ form.password.id_for_label }}">Contraseña</label>
+        <div class="input-group">
+          <span class="input-group-text"><i class="bi bi-shield-lock"></i></span>
+          {{ form.password }}
+        </div>
+        {% if form.password.errors %}
+          <div class="invalid-feedback d-block">{{ form.password.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="form-check">
+          {{ form.remember_me }}
+          <label class="form-check-label" for="{{ form.remember_me.id_for_label }}">Recordarme</label>
+        </div>
+        <a href="{% url 'password_reset' %}" class="link-primary">¿Olvidaste tu contraseña?</a>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 mb-2">Ingresar</button>
+      <p class="mt-1 mb-0 text-center">¿Aún no tienes cuenta? <a href="/registro" class="link-primary">Regístrate</a></p>
+    </form>
+  </section>
+</div>
+
+<!-- Footer -->
+<div class="footer-text">
+  © LicitFlow — Todos los derechos reservados<br>
+  Desarrollado por <a href="https://www.indexar.cl" target="_blank">@Indexar</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

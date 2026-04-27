@@ -1,0 +1,25 @@
+<div class="modal fade" id="welcomeModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content rounded-4">
+      <div class="modal-header border-0">
+        <h5 class="modal-title fw-bold">¡Bienvenido a LicitFlow!</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body pt-0">
+        <div class="d-flex align-items-center gap-3">
+          <div class="rounded-3 p-3" style="background:#eef2ff;color:#1d4ed8">
+            <i class="bi bi-puzzle fs-3"></i>
+          </div>
+          <p class="mb-0 text-muted">
+            Te acompañaremos con la mejor tecnología para buscar y gestionar licitaciones. 
+            En pocos pasos tendrás todo listo para comenzar.
+          </p>
+        </div>
+      </div>
+      <div class="modal-footer border-0">
+        <a class="btn btn-primary" href="{% url 'busqueda:index' %}">Ir a la búsqueda</a>
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>

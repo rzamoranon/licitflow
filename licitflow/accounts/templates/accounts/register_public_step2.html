@@ -1,0 +1,27 @@
+{% extends "layouts/base_public.html" %}
+{% block title %}Crear cuenta — Paso 2{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="content-card p-4 p-md-5">
+      <h2 class="fw-bold mb-1">Datos de <span class="text-danger">empresa</span></h2>
+      <div class="d-flex align-items-center gap-3 mb-4">
+        <div class="badge bg-light text-muted rounded-pill">1</div><span class="text-muted">Cuenta</span>
+        <div class="flex-grow-1 border-bottom"></div>
+        <div class="badge bg-primary rounded-pill">2</div><strong>Empresa</strong>
+      </div>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="mb-3">
+            <label class="form-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+            {{ field }}
+            {% for e in field.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+          </div>
+        {% endfor %}
+        <button class="btn btn-success btn-lg w-100">Crear Cuenta</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

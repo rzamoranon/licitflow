@@ -1,0 +1,318 @@
+{% extends "layouts/base_public.html" %}
+{% load widget_tweaks %}
+{% block title %}Crear cuenta — Paso 1{% endblock %}
+
+{% block content %}
+
+<style>
+  /* === STEP HEADER === */
+  .lf-wizard {
+    --lf-primary: #0d6efd;
+    --lf-primary-700:#0b5ed7;
+    --lf-muted:#6b7280;
+  }
+  .lf-wizard .lf-head {
+    background: linear-gradient(to right, #ffffff 0%, #ffffff 40%, #0d6efd 75%, #006eff 100%);
+    border: 1px solid #eef2ff;
+    border-radius: 20px;
+    box-shadow: 0 12px 35px rgba(13,110,253,.12);
+  }
+  /* === NEW STEPPER (left labels + right progress) === */
+  .lf-steps { display:flex; align-items:center; gap:1.25rem; }
+  .lf-step-pill {
+    display:flex; align-items:center; gap:.75rem;
+    padding:.35rem .7rem; border-radius:999px; background:rgba(255,255,255,.45);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.6); border:1px solid #e5edff;
+  }
+  .lf-step-icon { width:56px; height:56px; border-radius:50%; display:grid; place-items:center; font-size:26px; }
+  .lf-step-icon.is-active { background:#0d6efd; color:#fff; box-shadow:0 14px 32px rgba(13,110,253,.35); }
+  .lf-step-icon.is-idle   { background:#eef2ff; color:#3b82f6; border:1px solid #e2e8ff; }
+  .lf-step-text { font-weight:700; font-size:1.15rem; color:#0f172a; }
+  .lf-step-text.is-muted { color:#6b7280; font-weight:600; }
+
+  .lf-progress { flex:1; height:10px; border-radius:999px; background:#eaf0ff; position:relative; overflow:hidden; }
+  .lf-progress::after{
+    content:""; position:absolute; inset:0; width:50%; /* step 1 of 2 */
+    background:linear-gradient(90deg,#0d6efd 0%, #2cb67d 100%);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.4);
+  }
+  @media (max-width: 768px){
+    .lf-steps { flex-direction:column; align-items:flex-start; gap:.75rem; }
+    .lf-progress{ width:100%; }
+  }
+
+  /* === CARD === */
+  .lf-card {
+    border: 1px solid #eef2ff; border-radius: 18px;
+    box-shadow: 0 16px 40px rgba(2,6,23,.06);
+    background:#fff;
+  }
+
+  /* === FIELDS (floating label + icon) === */
+  .lf-field { position: relative; }
+  .lf-field .lf-icon {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    color: #6b7a90; z-index: 2; font-size: 18px;
+  }
+  .lf-field input.form-control {
+    padding-left: 42px; height: 56px; border-radius: 12px;
+    border:1px solid #dde6ff; transition: all .2s ease;
+  }
+  .lf-field input.form-control:focus {
+    box-shadow: 0 0 0 4px rgba(13,110,253,.12);
+    border-color: var(--lf-primary);
+  }
+  .lf-field label.form-label {
+    position:absolute; left: 42px; top: 50%; transform: translateY(-50%);
+    background: #fff; padding: 0 .35rem; color:#64748b;
+    transition: all .15s ease; pointer-events:none;
+  }
+  .lf-field input:not(:placeholder-shown) + label.form-label,
+  .lf-field input:focus + label.form-label {
+    top: -9px; font-size: .8rem; color: var(--lf-primary);
+  }
+
+  .form-text { color:#6b7280 }
+
+  /* Password strength */
+  .strength {
+    height: 6px; border-radius: 999px; background:#eef2ff; overflow:hidden;
+  }
+  .strength > span { display:block; height:100%; width:0; transition:width .25s ease }
+  .strength.is-1 > span { width:25%; background:#ef4444 }
+  .strength.is-2 > span { width:50%; background:#f59e0b }
+  .strength.is-3 > span { width:75%; background:#10b981 }
+  .strength.is-4 > span { width:100%; background:#0ea5e9 }
+
+  /* Buttons */
+  .lf-btn-lg { padding:.9rem 1.4rem; border-radius: 14px; font-weight:600 }
+
+  /* Gentle, non-invasive error hint (keep inputs neutral) */
+  .lf-field.has-error input.form-control{
+    border-color:#cbd5e1 !important; /* neutral slate-300 */
+    box-shadow:none !important;
+    background-color:#fff;
+  }
+  .lf-field.has-error .lf-icon{ color:#64748b; }
+  .lf-field.has-error label.form-label{ color:#64748b; }
+
+  /* Toast (auto dismiss) */
+  .lf-toast { border-radius:14px; box-shadow:0 10px 30px rgba(2,6,23,.18) }
+  .lf-toast .toast-header { border-bottom:0 }
+</style>
+
+<div class="lf-wizard">
+  <div class="lf-head p-3 p-md-4 mb-4">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <div class="d-flex align-items-center gap-3">
+        <h1 class="h3 mb-0 fw-bold">
+          Crea tu <span class="text-primary">cuenta</span>
+        </h1>
+        <span class="badge rounded-pill bg-light text-primary border border-primary-subtle">Paso 1 de 2</span>
+      </div>
+      <div class="lf-steps w-100">
+        <div class="d-flex align-items-center w-100 gap-3">
+          <div class="lf-step-pill">
+            <div class="lf-step-icon is-active"><i class="bi bi-person"></i></div>
+            <div class="lf-step-text">Cuenta</div>
+          </div>
+          <div class="lf-progress"></div>
+          <div class="lf-step-pill">
+            <div class="lf-step-icon is-idle"><i class="bi bi-building"></i></div>
+            <div class="lf-step-text is-muted">Empresa</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="lf-card p-4 p-md-5">
+    <form method="post" novalidate>
+      <div id="clientAlert" class="alert alert-warning d-none shadow-sm rounded-4 px-4 py-3" role="alert">
+        <div class="d-flex align-items-start gap-3">
+          <i class="bi bi-exclamation-triangle-fill fs-4"></i>
+          <div>
+            <strong>Faltan datos obligatorios</strong>
+            <div class="small text-muted">Completa los siguientes campos para continuar:</div>
+            <ul id="clientAlertList" class="mb-0 mt-2 ps-3"></ul>
+          </div>
+          <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+        </div>
+      </div>
+      {% csrf_token %}
+
+      <div class="row g-4">
+        <div class="col-md-6">
+          <div class="lf-field {% if form.is_bound and form.first_name.errors %}has-error{% endif %}">
+            <i class="bi bi-person lf-icon"></i>
+            {{ form.first_name|add_class:"form-control"|attr:"placeholder: " }}
+            <label class="form-label">Nombre *</label>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="lf-field {% if form.is_bound and form.last_name.errors %}has-error{% endif %}">
+            <i class="bi bi-person lf-icon"></i>
+            {{ form.last_name|add_class:"form-control"|attr:"placeholder: " }}
+            <label class="form-label">Apellido *</label>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="lf-field {% if form.is_bound and form.email.errors %}has-error{% endif %}">
+            <i class="bi bi-envelope lf-icon"></i>
+            {{ form.email|add_class:"form-control"|attr:"placeholder: " }}
+            <label class="form-label">Correo electrónico *</label>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="lf-field {% if form.is_bound and form.phone.errors %}has-error{% endif %}">
+            <i class="bi bi-telephone lf-icon"></i>
+            {{ form.phone|add_class:"form-control"|attr:"placeholder: " }}
+            <label class="form-label">Teléfono *</label>
+          </div>
+          <div class="form-text mt-1">Usaremos este número para notificaciones importantes.</div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="lf-field {% if form.is_bound and form.password1.errors %}has-error{% endif %}">
+            <i class="bi bi-lock lf-icon"></i>
+            {{ form.password1|add_class:"form-control js-pass-1"|attr:"placeholder: " }}
+            <label class="form-label">Contraseña *</label>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="lf-field {% if form.is_bound and form.password2.errors %}has-error{% endif %}">
+            <i class="bi bi-lock-fill lf-icon"></i>
+            {{ form.password2|add_class:"form-control"|attr:"placeholder: " }}
+            <label class="form-label">Repite la contraseña *</label>
+          </div>
+        </div>
+
+        <div class="col-12">
+          <div class="form-check">
+            {{ form.terms }}
+            <label class="form-check-label" for="{{ form.terms.id_for_label }}">
+              Acepto los <a href="#" class="text-decoration-none">Términos y Condiciones</a>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="d-flex justify-content-between align-items-center mt-5">
+        <a href="{% url 'pages:index' %}" class="btn btn-outline-secondary lf-btn-lg">
+          <i class="bi bi-arrow-left"></i> Volver
+        </a>
+        <button type="submit" class="btn btn-primary lf-btn-lg px-4">
+          Continuar <i class="bi bi-arrow-right-short fs-4"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  {% if form.is_bound and form.errors %}
+  <div class="position-fixed bottom-0 start-50 translate-middle-x mb-4" style="z-index:1080;">
+    <div id="formErrorsToast" class="toast lf-toast align-items-center text-bg-warning border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+      <div class="toast-header bg-transparent">
+        <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
+        <strong class="me-auto text-dark">Faltan datos</strong>
+        <small>Validación</small>
+        <button type="button" class="btn-close ms-2" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body text-dark">
+        Completa los siguientes campos obligatorios:
+        <ul class="mb-0 mt-2 ps-3">
+          {% for field in form %}
+            {% if field.errors %}<li><strong>{{ field.label }}</strong></li>{% endif %}
+          {% endfor %}
+          {% if form.terms.errors %}<li><strong>{{ form.terms.label }}</strong></li>{% endif %}
+        </ul>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+  // Password strength (simple client-side meter)
+  (function(){
+    const input = document.querySelector('.js-pass-1');
+    const meter = document.getElementById('pwd-meter');
+    if (!input || !meter) return;
+
+    const score = v => {
+      let s = 0;
+      if (!v) return 0;
+      if (v.length >= 8) s++;
+      if (/[A-Z]/.test(v)) s++;
+      if (/\d/.test(v)) s++;
+      if (/[^A-Za-z0-9]/.test(v)) s++;
+      return s;
+    };
+
+    input.addEventListener('input', e => {
+      meter.classList.remove('is-1','is-2','is-3','is-4');
+      const sc = score(e.target.value);
+      if (sc) meter.classList.add('is-' + sc);
+    });
+  })();
+
+  // Auto-show and auto-dismiss toast with form errors
+  (function(){
+    const el = document.getElementById('formErrorsToast');
+    if (!el || !window.bootstrap) return;
+    const t = new bootstrap.Toast(el, { delay: 5000 });
+    t.show();
+  })();
+
+  // Client-side required check to show a Bootstrap alert (non-invasive)
+  (function(){
+    const form = document.querySelector('.lf-card form');
+    const alertBox = document.getElementById('clientAlert');
+    const alertList = document.getElementById('clientAlertList');
+    if(!form || !alertBox || !alertList) return;
+
+    form.addEventListener('submit', function(e){
+      // build missing list
+      const fields = [
+        {name: 'first_name', label: 'Nombre'},
+        {name: 'last_name',  label: 'Apellido'},
+        {name: 'email',      label: 'Correo electrónico'},
+        {name: 'phone',      label: 'Teléfono'},
+        {name: 'password1',  label: 'Contraseña'},
+        {name: 'password2',  label: 'Repite la contraseña'}
+      ];
+
+      const missing = [];
+      fields.forEach(f => {
+        const el = form.querySelector(`[name="${f.name}"]`);
+        if (el && !String(el.value).trim()) missing.push(f.label);
+      });
+
+      const terms = form.querySelector('[name="terms"]');
+      if (terms && !terms.checked) missing.push('Acepto los Términos y Condiciones');
+
+      if (missing.length) {
+        e.preventDefault();
+        // render list
+        alertList.innerHTML = missing.map(t => `<li><strong>${t}</strong></li>`).join('');
+        alertBox.classList.remove('d-none');
+        // show as Bootstrap alert and auto-hide after 5s
+        try {
+          const bsAlert = new bootstrap.Alert(alertBox);
+          setTimeout(() => {
+            // Only close if still visible
+            if (!alertBox.classList.contains('d-none')) bsAlert.close();
+          }, 5000);
+        } catch(err) {}
+        // scroll into view for small screens
+        alertBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  })();
+</script>
+
+{% endblock %}
